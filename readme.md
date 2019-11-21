@@ -1,4 +1,4 @@
-# Neural network for staph data
+# Machine learning tools for mycoviral data
 People
     - Yifan Wu
 
