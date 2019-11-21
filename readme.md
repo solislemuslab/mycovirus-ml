@@ -11,3 +11,7 @@ People
 git clone https://github.com/solislemuslab/mycorivus-ml.git
 ```
 3. Inside this folder, create a subfolder called `data` where you will put the data. This folder is ignored in the `.gitignore` file, so nothing inside this folder will be pushed to github
+
+# Resources
+
+[Mycovirus paper](https://apsjournals.apsnet.org/doi/10.1094/PHYTO-05-19-0166-RVW)
