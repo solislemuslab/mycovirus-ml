@@ -1,6 +1,6 @@
 # Next Meeting 
 Goals: objectives, expectations, weekly meetings
-To do: read mycovirus paper, download public data
+To do: read mycovirus paper, download public data, wait for Aurelie on data
 
 - Name
 - Project
