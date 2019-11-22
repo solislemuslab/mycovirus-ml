@@ -1,6 +1,7 @@
 # Machine learning tools for mycoviral data
 People
-    - Yifan Wu
+- Yifan Wu
+- Luke Selberg
 
 # Steps to clone the repo locally
 
