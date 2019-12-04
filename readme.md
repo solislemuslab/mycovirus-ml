@@ -2,6 +2,7 @@
 People
 - Yifan Wu
 - Luke Selberg
+- Zhiwen Xu
 
 # Steps to clone the repo locally
 
