@@ -148,6 +148,7 @@ awk -F ',' '{for(i=1;i<=27076;i++)printf "%s ",$i;printf "\n"}' core_gene_alignm
 awk -F ',' '{for(i=27077;i<=NF;i++)printf "%s ",$i;printf "\n"}' core_gene_alignment-narsa.csv > core_gene_alignment-narsa-subset2.csv
 ```
 
+Here, we convert data to matrix of integers, but this is a bad idea! We should not convert ACGT to 1234, we should treat as categories, or maybe try to read as words?
 ```julia
 ## -----------------------------
 ## Saving as julia data files
