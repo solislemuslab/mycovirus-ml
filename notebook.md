@@ -78,6 +78,11 @@ Methods:
 - neural networks
 - ...
 
+## Main difficulties of the project
+- We do not have aligned sequences (can we align ourselves?)
+- Input data is letters/categories: ACGT, cannot be treated as numbers 1234
+
+
 ## Previous work for toy dataset
 
 Claudia had fit naive neural networks and random forest in Julia. All scripts in `scripts/previous-work`:
