@@ -66,6 +66,18 @@ These files have 350 and 7 viral sequences:
     - columns=nucleotide sites (features)
 - Labels for Staph bacteria (0=susceptible to antibiotic, 1=resistant to antibiotic): `responses-staph.csv`
 
+## New aligned data
+
+Helena sent us the `Alignments.zip` file (1/16), and this is her email:
+
+I just uploaded to the shared Box a folder named "Alignments" that contains the files with aligned sequences for the Hypoviridae family. This family contains most of the Sclerotinia mycoviruses and is the family with the largest number of viruses associated with hypovirulence in fungi. It has right now 19 members, of which only 16 has complete polyprotein sequences available. Those 16 sequences are the ones I used for the alignments. 
+
+Of those 16 sequences, 7 have been shown to cause hypovirulence in fungi. In the file "Hypoviridae.csv" you will find the information for all of this including the name, the accession number, the abbreviation, if they have biocontrol characteristics and if there is a complete sequence. For the biocontrol column I added a Y for Yes (for the 7 that cause hypovirulence) or a N for No (the 9 that haven't been studied as hypovirulent). The last column is the Complete Sequence. If they have a C is because they are complete including the UTR regions, or if they have a P is because they only have the complete polyprotein (No UTRs). 
+
+For the alignments I used the polyprotein. You will find a file for all of them (the 16 I used) aligned both in nucleotide ("hypoviridae_aligned_polyprotein_nucleotide_all.fas") or in amino acids ("hypoviridae_aligned_polyprotein_aminoacid_all.fas"). I also added the aligned filed that contains just the biocontrol ones (7), in both nucleotides ("hypoviridae_aligned_polyprotein_nucleotide_biocontrol.fas") and amino acids ("hypoviridae_aligned_polyprotein_aminoacid_biocontrol.fas"), and the last 2 files are the aligned sequences but for the non-biocontrol ones (9) in both nucleotides ("hypoviridae_aligned_polyprotein_nucleotide_nobiocontrol.fas") and amino acids ("hypoviridae_aligned_polyprotein_aminoacid_nobiocontrol.fas"). 
+
+I also think that if the number of sequences is not sufficient, we could add other families (Endornaviridae and Narnaviridae) that also have 1 segment of ssRNA as genome and are non encapsidated. They might differ a lot, but at least they only have 1 RNA segment, which we could align and see if they have genetic similarities of some sort.
+
 # Analyses
 
 Next steps: We want to fit statistical/machine-learning models to accomplish two tasks:
