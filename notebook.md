@@ -78,6 +78,20 @@ For the alignments I used the polyprotein. You will find a file for all of them 
 
 I also think that if the number of sequences is not sufficient, we could add other families (Endornaviridae and Narnaviridae) that also have 1 segment of ssRNA as genome and are non encapsidated. They might differ a lot, but at least they only have 1 RNA segment, which we could align and see if they have genetic similarities of some sort.
 
+## Description of the data (meeting 1/31)
+- We have two main groups of files (unaligned/aligned) and within each group, there are two subgroups (protein coded or nucleotide coded)
+     - Unaligned
+          - Protein coded: two files 1) virus that kill fungus, 2) virus that do not kill fungus
+          - Nucleotide coded: two files 1) virus that kill fungus, 2) virus that do not kill fungus
+     - Aligned
+          - Protein coded: two files 1) virus that kill fungus, 2) virus that do not kill fungus
+          - Nucleotide coded: two files 1) virus that kill fungus, 2) virus that do not kill fungus
+
+Next steps:
+- More complete picture of data based on dimension (how many viruses in each file, how many columns), missingness, how many kill fungus vs how many do not kill fungus, differences between protein and nucleotide coded files, how many columns are identical across virus?
+- Conglomerate data: we want to file 1 genetic file for aligned (with fungus killers and non-killers in the same file) and 1 genetic file for unaligned (with fungus killers and non-killers in the same file). In addition, we want to have 1 "labels file" for aligned that simply list a 0/1 vector (0=non-killer, 1=killer) for each virus in the genetic file. Same for unaligned (1 "labels file")
+- Think about ways in which could do the alignment automatically (as step 1 in the machine-learning process): the idea is to minimize discrepancies across columns. Maybe this is too hard to do (impossible?), so we should also explore data augmentation techniques
+
 # Analyses
 
 Next steps: We want to fit statistical/machine-learning models to accomplish two tasks:
