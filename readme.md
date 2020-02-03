@@ -1,2 +1,3 @@
-# Read fatsa file into a python dataframe
-- documented attempts in jupyter notebook
+# Progress:
+- documented attempts at parsing fasta file into dataframe in a jupyter notebook
+- (2/2): did some data exploration of the fasta files
