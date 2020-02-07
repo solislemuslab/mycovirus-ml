@@ -92,6 +92,13 @@ Next steps:
 - Conglomerate data: we want to file 1 genetic file for aligned (with fungus killers and non-killers in the same file) and 1 genetic file for unaligned (with fungus killers and non-killers in the same file). In addition, we want to have 1 "labels file" for aligned that simply list a 0/1 vector (0=non-killer, 1=killer) for each virus in the genetic file. Same for unaligned (1 "labels file")
 - Think about ways in which could do the alignment automatically (as step 1 in the machine-learning process): the idea is to minimize discrepancies across columns. Maybe this is too hard to do (impossible?), so we should also explore data augmentation techniques
 
+
+## Alignment free options (meeting 2/7)
+
+- We had discussed to perform the alignment as part of the machine learning pipeline. The rationale was that we have more data in unaligned sequences compared to aligned sequences. However, it seems that the alignment step has high complexity (O(2^n) where n=sequence length), so we are exploring alignment-free alternative which are based on kmers
+- For alignment free alternatives, we need to decide k (length of the kmer), and specific kmer sequences that we will use. Perhaps biologists can give us k and the kmer sequences, but our algorithm should be able to create the kmer table even without information from biologists (maybe by including all possible kmers of a given length)
+- We will also explore data augmentation techniques for genomic data
+
 # Analyses
 
 Next steps: We want to fit statistical/machine-learning models to accomplish two tasks:
