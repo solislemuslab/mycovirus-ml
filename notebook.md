@@ -99,6 +99,13 @@ Next steps:
 - For alignment free alternatives, we need to decide k (length of the kmer), and specific kmer sequences that we will use. Perhaps biologists can give us k and the kmer sequences, but our algorithm should be able to create the kmer table even without information from biologists (maybe by including all possible kmers of a given length)
 - We will also explore data augmentation techniques for genomic data
 
+## Data augmentation technique (meeting 2/14)
+
+- Zhiwen presented two approaches to data augmentation from kmer table
+- The first one involves the separation of the kmer table into two parts: fungus-killers (label=1), non-killers (label=0). For each feature in the kmer table, we compute min, max and mean, and then sample from normal (or maybe Beta for proportions restricted to 0,1) distribution. We sample each feature, and then label this new row according to whether it is coming from the fungus-killers table (label=1) or not (label=0). This algorithm is promising as it works for tables with many columns, but it has the disadvantage that ignores any potential correlation among features
+- The second approach involves the definition of a function f:R^p->R where p is the number of features, such that f(X_1,...,X_p)=0 or 1 (depending on the label). We will create new rows by using the inverse function f^{-1}(0) = (X1,...,Xp)
+- Papers in resources in slack
+
 # Analyses
 
 Next steps: We want to fit statistical/machine-learning models to accomplish two tasks:
