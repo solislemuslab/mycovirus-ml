@@ -106,6 +106,10 @@ Next steps:
 - The second approach involves the definition of a function f:R^p->R where p is the number of features, such that f(X_1,...,X_p)=0 or 1 (depending on the label). We will create new rows by using the inverse function f^{-1}(0) = (X1,...,Xp)
 - Papers in resources in slack
 
+## Questions for biologists regarding the data
+- Why are there strange characters in the nucleotide table? We would expect only to have ACGT
+- Is there a list of kmers that we can look for?
+
 # Analyses
 
 Next steps: We want to fit statistical/machine-learning models to accomplish two tasks:
