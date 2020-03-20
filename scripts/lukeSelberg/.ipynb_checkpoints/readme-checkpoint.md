@@ -1,18 +1,6 @@
-# Machine learning tools for mycoviral data
-People
-- Yifan Wu
-- Luke Selberg
-
-# Steps to clone the repo locally
-
-1. In the terminal, go to the folder where you want to put the local repository using cd
-
-2. Type:
-```shell
-git clone https://github.com/solislemuslab/mycorivus-ml.git
-```
-3. Inside this folder, create a subfolder called `data` where you will put the data. This folder is ignored in the `.gitignore` file, so nothing inside this folder will be pushed to github
-
-# Resources
-
-[Mycovirus paper](https://apsjournals.apsnet.org/doi/10.1094/PHYTO-05-19-0166-RVW)
+# Progress:
+- (undated): documented attempts at parsing fasta file into dataframe in a jupyter notebook
+- (2/2): did some data exploration of the fasta files
+- (2/16): worked on random kmer table 
+- (2/19): made python script to turn fasta files into kmer count and frequency tables and export to csv files
+- (3/20): made kmer table using sklearn and worked on visualization
