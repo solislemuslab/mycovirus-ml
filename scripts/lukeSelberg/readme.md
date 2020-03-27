@@ -6,3 +6,4 @@
 - (3/20): made kmer table using sklearn and worked on visualization
 - (3/25): Added kmeans and pca models
 - (3/26): Added spectral clustering, and furthered kmeans and pca models. Played with mean shifting.
+- (3/26): Improved visualization of K-means and PCA and started some feature selection.
