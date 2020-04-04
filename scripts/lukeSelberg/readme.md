@@ -7,3 +7,5 @@
 - (3/25): Added kmeans and pca models
 - (3/26): Added spectral clustering, and furthered kmeans and pca models. Played with mean shifting.
 - (3/26): Improved visualization of K-means and PCA and started some feature selection.
+- (4/3): Converted kmeans and pca model into script
+- (4/4): Updated script and added tSNE

@@ -4,9 +4,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+import sys
 
-# the websiteScriptKmeans() method creates a png image and returns a dataframe with names, sequences, and labels
-
+# the websiteScriptKmeans() method creates png images and returns a list of dataframes with names, sequences, and labels
+# REPLACE these paths for your computer. this data trains the model.
+path1 = "../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta"
+path01 = "../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta"
 
 # Parse datafile. Contains an index with sequence names and a column with sequences
 # Pass the fasta file as the data parameter
@@ -30,12 +33,9 @@ def kmerXTable(s, a, b):
     kmers = s_hat.toarray()
     return pd.DataFrame(kmers,columns=kmerNames, index = s.index)
 
-# Replace path1 and path01 with your file paths
-def websiteScriptKmeans():
-    # replace these paths for your computer
-    path1 = "../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta"
-    path01 = "../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta"
-
+# Pass a list of fasta file locations
+# Example: websiteScriptKmeans(["../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta",  "../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta"])
+def websiteScriptKmeans(fastaList):
     # read in fasta files
     virus1 = parseFasta(path1)
     virus01 = parseFasta(path01)
@@ -52,24 +52,44 @@ def websiteScriptKmeans():
     #Kmeans
     km4 = KMeans(random_state = 42, n_clusters = 2)
     km4.fit(kmer7Table01[cols])
-    # generate array of labels
-    y_hat4 = km4.predict(kmer7Table01[cols])
+    
+    output = []
+    for i in range(0, len(fastaList)):
+        inputData = parseFasta(fastaList[i])
+        kmer7TableInput = kmerXTable(inputData, 7,7)
+        
+        # generate array of labels
+        y_hat = km4.predict(kmer7TableInput[cols])
 
-    #PCA
-    embedding2 = PCA()
-    embedding2.fit(kmer7Table01[cols])
-    show2 = pd.DataFrame(embedding2.transform(kmer7Table01[cols]))
-    # show kmeans clustering
-    show2.plot.scatter(x=0, y=1, style="o", c=y_hat4, cmap = "viridis", s=2)
-    plt.title('PCA Visualization for KMeans Clustering')
-    plt.xlabel('First Principal Component')
-    plt.ylabel('Second Principal Component')
-    plt.savefig('visual.png', bbox_inches='tight')
+        #PCA
+        if len(inputData) > 1:
+            embedding = PCA()
+            embedding.fit(kmer7TableInput[cols])
+            show = pd.DataFrame(embedding.transform(kmer7TableInput[cols]))
+            # show kmeans clustering
+            show.plot.scatter(x=0, y=1, style="o", c=y_hat, cmap = "viridis", s=2)
+            plt.title('PCA Visualization for KMeans Clustering')
+            plt.xlabel('First Principal Component')
+            plt.ylabel('Second Principal Component')
+            plt.savefig('visual' + str(i) + '.png', bbox_inches='tight')
 
-    virus01["Labels"] = y_hat4
-    return virus01
+        inputData["Labels"] = y_hat
+        output.append(inputData)
+    return output
 
-# Make a script to call websiteScriptKmeans(). This will save a png image and return a dataframe with names, sequences, and labels.
+## Below shows example usage of this script. Paths are relative to my computer.
 
-# To test this script uncomment the line below and run this script:
-# print(websiteScriptKmeans().head())
+## Uncomment below to check functionality if file paths are given as command line arguements
+## Example: python websiteScriptKmeans.py ../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta ../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta
+
+# fastaList = sys.argv[1:]
+# x = websiteScriptKmeans(fastaList)
+# for df in x:
+#     print(df.head())
+    
+
+## Uncomment below to check functionality if file paths are given in the code
+
+# x = websiteScriptKmeans(["../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta",  "../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta"])
+# for df in x:
+#     print(df.head())
