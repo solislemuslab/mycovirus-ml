@@ -9,3 +9,4 @@
 - (3/26): Improved visualization of K-means and PCA and started some feature selection.
 - (4/3): Converted kmeans and pca model into script
 - (4/4): Updated script and added tSNE
+- (4/8): Updated script to work with aligned files. Tried testing/evaluating kmeans model

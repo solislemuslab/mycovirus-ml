@@ -56,6 +56,7 @@ def websiteScriptKmeans(fastaList):
     output = []
     for i in range(0, len(fastaList)):
         inputData = parseFasta(fastaList[i])
+        inputData["Sequence"] = inputData["Sequence"].apply(lambda x: x.replace("-", ""))
         kmer7TableInput = kmerXTable(inputData, 7,7)
         
         # generate array of labels
