@@ -91,6 +91,6 @@ def websiteScriptKmeans(fastaList):
 
 ## Uncomment below to check functionality if file paths are given in the code
 
-# x = websiteScriptKmeans(["../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta",  "../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta"])
-# for df in x:
-#     print(df.head())
+x = websiteScriptKmeans(["../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta",  "../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta"])
+for df in x:
+    print(df.head())
