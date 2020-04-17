@@ -1,5 +1,9 @@
 # This project
 data/*
+.ipynb_checkpoints/*
+__pycache__/*
+*.pyc
+
 
 # Compiled source #
 ###################
