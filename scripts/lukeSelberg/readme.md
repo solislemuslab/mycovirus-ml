@@ -11,3 +11,4 @@
 - (4/4): Updated script and added tSNE
 - (4/8): Updated script to work with aligned files. Tried testing/evaluating kmeans model
 - (4/17): Improved kmeans, pca, tsne
+- (4/24,25): Updated scripts, improved models, made comparisons
