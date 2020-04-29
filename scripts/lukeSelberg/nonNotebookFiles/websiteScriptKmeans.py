@@ -1,8 +1,9 @@
 import pandas as pd
 from Bio import SeqIO
 import matplotlib.pyplot as plt
-import sys
 import matplotlib.patches as mpatches
+plt.switch_backend('Agg')
+import sys
 import warnings
 
 from sklearn.feature_extraction.text import TfidfVectorizer

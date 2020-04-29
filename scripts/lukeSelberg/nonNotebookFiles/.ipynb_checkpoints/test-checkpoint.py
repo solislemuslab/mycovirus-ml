@@ -4,5 +4,5 @@ A = ["../data/hypoviridae_aligned_polyprotein_nucleotide_biocontrol.fas", "../da
 
 UA = ["../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta",  "../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta"]
 
-output = wsk.websiteScriptKmeans(A)
+output = wsk.websiteScriptKmeans(UA)
 
