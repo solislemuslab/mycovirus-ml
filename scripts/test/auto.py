@@ -1,4 +1,4 @@
-import argparse
+#import argparse
 import gensim
 import numpy as np
 import tensorflow as tf
@@ -7,7 +7,7 @@ from tensorflow.keras import models
 from tensorflow.keras.optimizers import Adam
 
 class AE(object):
-    def __init__(self, sub_sequence_len=32, model_code):
+    def __init__(self, model_code, sub_sequence_len=32):
         self.sub_sequence_len = sub_sequence_len
         self.model_code = model_code
 
@@ -19,8 +19,14 @@ class AE(object):
         #self.y = None
         self.miss_count = 0
 
-    def train(self, bs=32, epochs):
-        self.ae.fit(self.x,self.x,batch_size=bs,epochs=epochs,shuffle=True, verbose=1)
+    def train(self, epochs, bs=32):
+        # model: 0 for CNN-AE, 1 for LSTM-AE
+        if self.model_code == 0:
+            self.ae.fit(self.x[:,:,:,np.newaxis],self.x[:,:,:,np.newaxis],batch_size=bs,epochs=epochs, shuffle=True, verbose=1)
+        elif self.model_code == 1:
+            self.ae.fit(self.x,self.x,batch_size=bs,epochs=epochs,shuffle=True, verbose=1)
+        else:
+            raise ValueError('invalid model code')
 
     def save_model(self, savename):
         self.ae.reset_metrics()
@@ -29,9 +35,9 @@ class AE(object):
     def compile_model(self):
         # model: 0 for CNN-AE, 1 for LSTM-AE
         if self.model_code == 0:
-            self.ae = self.compile_CNN((32, self.sub_sequence_len, 1))
+            self.compile_CNN((32, self.sub_sequence_len, 1))
         elif self.model_code == 1:
-            self.ae = self.compile_LSTM(input_shape)
+            self.compile_LSTM((32, self.sub_sequence_len))
         else:
             raise ValueError('invalid model code')
 
@@ -115,16 +121,18 @@ class AE(object):
         # distances(word_or_vector, other_words=())
         # distance(w1, w2)
         print('loading sequences and embeddings...')
-        embed_0 = self.get_training_data(fasta='mycovirus_genbank_all_refseq_nucleotide_unique.fasta', label=0)
-        embed_1 = self.get_training_data(fasta='Sclerotinia_biocontrol_mycovirus_nucleotide.fasta', label=1)
-        self.x = embed_full(embed_0) + embed_full(embed_1)
+        embed_0 = self.get_training_data(fasta='../data/mycovirus_genbank_all_refseq_nucleotide_unique.fasta', label=0)
+        embed_1 = self.get_training_data(fasta='../data/Sclerotinia_biocontrol_mycovirus_nucleotide.fasta', label=1)
+        self.x = np.concatenate((np.array(self.embed_full(embed_0)), np.array(self.embed_full(embed_1))), axis=0)
+        print('Input shape is: ')
+        print(self.x.shape)
 
     def embed_full(self, seqs, dim=32):
         def embed(seq, dim=32):
             embeddings = np.zeros((dim, len(seq)))
             for i, s in enumerate(seq):
                 try:
-                    embeddings[:, i] = seq_vectors.get_vector(s)
+                    embeddings[:, i] = self.seq_vectors.get_vector(s)
                 except KeyError:
                     embeddings[:, i] = 0.2*np.random.randn((32)) # random noise if nonexist
                     self.miss_count = self.miss_count + 1 # see how many not in vocabulary
@@ -136,7 +144,7 @@ class AE(object):
         print('There are ' + str(self.miss_count) + ' sequences not in word2vec vocabulary')
         return embeddings
 
-    def get_training_data(self, fasta, label, length=self.sub_sequence_len):
+    def get_training_data(self, fasta, label, length=32):
         kmer_vectors = self.get_kmers(fasta=fasta)
         training = []
         for s in kmer_vectors:
@@ -175,24 +183,15 @@ class AE(object):
         return genomes
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('model_code', metavar='T', type=int, help='0 for CNN 1 for RNN')
-    args = parser.parse_args()
-
-    if args.model_code == 0:
-        model_code = 0
-    else if args.model_code == 1:
-        model_code = 1
-    else:
-        print('invalid model code')
-        raise ValueError
+    model_code = int(input('model code (0 for CNN, 1 for RNN)'))
 
     savename = input('model save name:')
-
+    nepochs = int(input('how many epochs?'))
+    
     ae = AE(model_code=model_code)
-    ae.load_embedding_data(Word2Vec_file='model')
+    ae.load_embedding_data(Word2Vec_file='virus2vec.model')
     ae.compile_model()
-    ae.train(bs=32, epochs=50)
-    save_model(self, savename=savename)
+    ae.train(bs=32, epochs=nepochs)
+    ae.save_model(savename=savename)
 
 
