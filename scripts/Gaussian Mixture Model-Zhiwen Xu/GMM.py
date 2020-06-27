@@ -66,15 +66,17 @@ def read_fasta(path1,path2):
     all_gene_len = gene_len_0 + gene_len_1
     return all_genes,all_gene_len
 
+def get_predictions(path1,path2,k_min,k_max,num_class,cov_type):
+    kmer_table = get_kmer_table(path1, path2, k_min, k_max)
+    gmm = GMM(n_components=num_class,covariance_type=cov_type).fit(kmer_table)
+    labels = gmm.predict(kmer_table)
+    return labels
+
 # change the following parameters to user inputs
 path1 = "label0.fasta"
 path2 = "label1.fasta"
 k_min = 2
 k_max = 3
-num_type = 2
-
-kmer_table = get_kmer_table(path1,path2,k_min,k_max)
-gmm = GMM(n_components=num_type).fit(kmer_table)
-labels = gmm.predict(kmer_table)
-
-# predicted results are stored in labels
+num_class = 2
+cov_type = 'full'
+predictions = get_predictions(path1,path2,k_min,k_max,num_class,cov_type)
