@@ -25,8 +25,8 @@ def parseFasta(data):
     s.reset_index()
     return pd.DataFrame(s)
 
-def get_kmer_table(path1,path2,k_min,k_max):
-    genes,gene_len = read_fasta(path1,path2)
+def get_kmer_table(paths,k_min,k_max):
+    genes,gene_len = read_fasta(paths)
     count_vect = CountVectorizer(analyzer='char', ngram_range=(k_min, k_max))
     X = count_vect.fit_transform(genes)
     chars = count_vect.get_feature_names()
@@ -51,32 +51,30 @@ def get_gene_len(genes):
         gene_len.append(len(genes[i]))
     return gene_len
 
-def read_fasta(path1,path2):
-    virus1 = parseFasta(path1)
-    # put confirmed virus killers at bottom, and removed the duplicates already in the data
-    virus01 = parseFasta(path1)
-    virus01 = virus01.append(virus1)
-    virus01 = virus01.drop_duplicates(keep="last")
-    genes = list(virus01['Sequence'])
-    genes_0 = get_gene_sequences(path1)
-    genes_1 = get_gene_sequences(path2)
-    gene_len_0 = get_gene_len(genes_0)
-    gene_len_1 = get_gene_len(genes_1)
-    all_genes = genes
-    all_gene_len = gene_len_0 + gene_len_1
+def read_fasta(paths):
+    all_genes = []
+    all_gene_len = []
+    
+    for path in paths:
+        virus = parseFasta(path)
+        virus = virus.drop_duplicates(keep="last")
+        genes = list(virus['Sequence'])
+        genes_seq = get_gene_sequences(path)
+        gene_len = get_gene_len(genes_seq)
+        all_genes = all_genes + genes_seq
+        all_gene_len = all_gene_len + gene_len
     return all_genes,all_gene_len
 
-def get_predictions(path1,path2,k_min,k_max,num_class,cov_type):
-    kmer_table = get_kmer_table(path1, path2, k_min, k_max)
+def get_predictions(paths,k_min,k_max,num_class,cov_type):
+    kmer_table = get_kmer_table(paths, k_min, k_max)
     gmm = GMM(n_components=num_class,covariance_type=cov_type).fit(kmer_table)
     labels = gmm.predict(kmer_table)
     return labels
 
 # change the following parameters to user inputs
-path1 = "label0.fasta"
-path2 = "label1.fasta"
+paths = ["label0.fasta","label1.fasta"]
 k_min = 2
 k_max = 3
 num_class = 2
 cov_type = 'full'
-predictions = get_predictions(path1,path2,k_min,k_max,num_class,cov_type)
+predictions = get_predictions(paths,k_min,k_max,num_class,cov_type)
