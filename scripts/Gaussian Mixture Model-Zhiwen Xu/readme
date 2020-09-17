@@ -4,3 +4,6 @@ see:https://scikit-learn.org/stable/auto_examples/mixture/plot_gmm_covariances.h
 
 Sammon Mapping Paper:
 http://theoval.cmp.uea.ac.uk/~gcc/matlab/sammon/sammon.pdf
+
+Sammon Mapping Implementation:
+https://github.com/tompollard/sammon
