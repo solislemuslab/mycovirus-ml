@@ -1,15 +1,18 @@
 # import packages
 import matplotlib
-matplotlib.use('TkAgg')
+#matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pdz
 import numpy as np
 import pandas as pd
-import numpy as np
 
 from pandas import Series, DataFrame
 import Bio
 from Bio import SeqIO,AlignIO
+
+import sklearn
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.mixture import GaussianMixture as GMM
 
@@ -19,10 +22,11 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
+import time
+
 
 # methods
 
-# parseFasta(data) credit to Luke
 def parseFasta(data):
     d = {fasta.id: str(fasta.seq) for fasta in SeqIO.parse(data, "fasta")}
     pd.DataFrame([d])
@@ -32,8 +36,8 @@ def parseFasta(data):
     return pd.DataFrame(s)
 
 
-def get_kmer_table(paths, k_min, k_max):
-    genes, gene_len = read_fasta(paths)
+def get_kmer_table(path, k_min, k_max):
+    genes, gene_len = read_fasta(path)
     count_vect = CountVectorizer(analyzer='char', ngram_range=(k_min, k_max))
     X = count_vect.fit_transform(genes)
     chars = count_vect.get_feature_names()
@@ -61,26 +65,44 @@ def get_gene_len(genes):
     return gene_len
 
 
-def read_fasta(paths):
-    all_genes = []
-    all_gene_len = []
-
-    for path in paths:
-        virus = parseFasta(path)
-        virus = virus.drop_duplicates(keep="last")
-        genes = list(virus['Sequence'])
-        genes_seq = get_gene_sequences(path)
-        gene_len = get_gene_len(genes_seq)
-        all_genes = all_genes + genes_seq
-        all_gene_len = all_gene_len + gene_len
-    return all_genes, all_gene_len
+# read single fasta file containing all the gene sequences
+def read_fasta(path):
+    virus = parseFasta(path)
+    virus = virus.drop_duplicates(keep="last")
+    genes = list(virus['Sequence'])
+    gene_seq = get_gene_sequences(path)
+    gene_len = get_gene_len(gene_seq)
+    return gene_seq, gene_len
 
 
-def get_predictions(paths, k_min, k_max, num_class, cov_type):
-    kmer_table = get_kmer_table(paths, k_min, k_max)
-    gmm = GMM(n_components=num_class, covariance_type=cov_type).fit(kmer_table)
-    labels = gmm.predict(kmer_table)
-    return labels
+def get_predictions(path, k_min, k_max, num_class, cov_type, seed):
+    kmer_table = get_kmer_table(path, k_min, k_max)
+    gmm = GMM(n_components=num_class, covariance_type=cov_type, random_state=seed).fit(kmer_table)
+    predictions = gmm.predict(kmer_table)
+    return predictions
+
+
+def get_predictions_semi(path, k_min, k_max, num_class, cov_type, seed, labels):
+    kmer_table = get_kmer_table(path, k_min, k_max)
+    finalDf = pd.concat([kmer_table, pd.Series(labels)], axis=1)
+    gmm = GMM(n_components=num_class, covariance_type=cov_type, random_state=seed)
+    gmm.means_init = np.array([kmer_table[finalDf.Labels == i].mean(axis=0) for i in range(num_class)])
+    gmm.fit(kmer_table)
+    predictions = gmm.predict(kmer_table)
+    return predictions
+
+
+def cal_accuracy(labels, predictions):
+    err = 0
+    total_len = len(labels)
+    for i in range(len(labels)):
+        if (labels[i] == -1):
+            total_len = total_len - 1
+            continue
+        if (labels[i] != predictions[i]):
+            err += 1
+
+    return 1 - err / (total_len)
 
 
 def sammon(x, n, display=2, maxhalves=20, maxiter=500, tolfun=1e-9):
@@ -163,7 +185,7 @@ def sammon(x, n, display=2, maxhalves=20, maxiter=500, tolfun=1e-9):
     return [y, E]
 
 
-def sammon_plot(y, plot_labels):
+def sammon_plot(y, plot_labels, path):
     x_axis = []
     y_axis = []
 
@@ -172,33 +194,31 @@ def sammon_plot(y, plot_labels):
         y_axis.append(y[i][1])
 
     sns.scatterplot(x_axis, y_axis, hue=plot_labels, legend='full')
-    plt.show()
+    # images.append(path)
+    plt.savefig(path)
+    plt.close()
+    # plt.show()
 
 
 def cal_accuracy(labels, predictions):
     err = 0
+    total_len = len(labels)
     for i in range(len(labels)):
         if (labels[i] == -1):
+            total_len = total_len - 1
             continue
         if (labels[i] != predictions[i]):
             err += 1
 
-    return 1 - err / (len(labels))
+    return 1 - err / (total_len)
 
 
-def create_labels(files):
-    labels = []
-    for f in files:
-        length = len(get_gene_sequences(f))
-    return labels
-
-
-def PCA_plot(x, y, n_dim):
+def PCA_plot(x, y, n_dim, path):
     x = StandardScaler().fit_transform(x)
     pca = PCA(n_components=n_dim)
     principalComponents = pca.fit_transform(x)
     principalDf = pd.DataFrame(data=principalComponents, columns=['principal component 1', 'principal component 2'])
-    finalDf = pd.concat([principalDf, pd.Series(labels1)], axis=1)
+    finalDf = pd.concat([principalDf, pd.Series(y)], axis=1)
     finalDf.columns = ['principal component 1', 'principal component 2', 'target']
 
     fig = plt.figure(figsize=(8, 8))
@@ -214,32 +234,44 @@ def PCA_plot(x, y, n_dim):
                    , finalDf.loc[indicesToKeep, 'principal component 2']
                    , c=color)
     ax.legend(targets)
-    plt.show()
+    # images.append(path)
+    fig.savefig(path)
+    plt.close(fig)
+    # plt.show()
 
-def tsne_plot(x,y):
+def tsne_plot(x,y,path,title):
     tsne = TSNE()
     X_embedded = tsne.fit_transform(x)
     sns.scatterplot(X_embedded[:,0], X_embedded[:,1], hue=y, legend='full')
+    #images.append(path)
+    plt.xlabel('Dimension 1')
+    plt.ylabel('Dimension 2')
+    plt.title(title)
+    plt.savefig(path)
+    plt.close()
 
-def model_selection(paths,labels,num_class):
+def model_selection(path,labels,num_class):
     best_accu = 0
+    best_prediction = []
     cov_type = ['full','diag','tied','spherical']
     k_min = [2,3,4]
-    k_max = [3,4,5]
+    k_max = [2,3,4,5]
     for cov in cov_type:
         for k1 in k_min:
             for k2 in k_max:
                 if (k2 >= k1):
-                    prediction = get_predictions(paths,k1,k2,num_class,cov)
+                    prediction = get_predictions_semi(path,k1,k2,num_class,cov,0,labels)
                     accu = cal_accuracy(labels,prediction)
                     if accu > best_accu:
                         best_accu = accu
                         best_kmin = k1
                         best_kmax = k2
                         best_cov = cov
+                        best_prediction = prediction
     print('Best model has the following parameters:')
     print('minimum length of kmer: ', best_kmin)
     print('maximum length of kmer: ', best_kmax)
     print('covariance type: ', best_cov)
     print('It has an accuracy regard to known labels of ',best_accu)
-    return
+    return best_kmin,best_kmax,best_cov,best_prediction
+
