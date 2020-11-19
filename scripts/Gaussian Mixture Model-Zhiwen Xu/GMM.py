@@ -65,14 +65,19 @@ def get_gene_len(genes):
     return gene_len
 
 
-# read single fasta file containing all the gene sequences
-def read_fasta(path):
-    virus = parseFasta(path)
-    virus = virus.drop_duplicates(keep="last")
-    genes = list(virus['Sequence'])
-    gene_seq = get_gene_sequences(path)
-    gene_len = get_gene_len(gene_seq)
-    return gene_seq, gene_len
+def read_fasta(paths):
+    all_genes = []
+    all_gene_len = []
+    
+    for path in paths:
+        virus = parseFasta(path)
+        virus = virus.drop_duplicates(keep="last")
+        genes = list(virus['Sequence'])
+        genes_seq = get_gene_sequences(path)
+        gene_len = get_gene_len(genes_seq)
+        all_genes = all_genes + genes_seq
+        all_gene_len = all_gene_len + gene_len
+    return all_genes,all_gene_len
 
 
 def get_predictions(path, k_min, k_max, num_class, cov_type, seed):
