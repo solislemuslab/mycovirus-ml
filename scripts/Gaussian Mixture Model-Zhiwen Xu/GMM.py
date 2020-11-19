@@ -87,11 +87,16 @@ def get_predictions(path, k_min, k_max, num_class, cov_type, seed):
     return predictions
 
 
-def get_predictions_semi(path, k_min, k_max, num_class, cov_type, seed, labels):
+def get_predictions_semi(path,k_min,k_max,num_class,cov_type,seed,labels):
+    targets = []
     kmer_table = get_kmer_table(path, k_min, k_max)
-    finalDf = pd.concat([kmer_table, pd.Series(labels)], axis=1)
-    gmm = GMM(n_components=num_class, covariance_type=cov_type, random_state=seed)
-    gmm.means_init = np.array([kmer_table[finalDf.Labels == i].mean(axis=0) for i in range(num_class)])
+    finalDf = pd.concat([kmer_table, pd.Series(labels)], axis = 1)
+    gmm = GMM(n_components=num_class,covariance_type=cov_type,random_state = seed)
+    for i in range(num_class):
+        if (i in list(finalDf.Labels)):
+            targets.append(i)
+    if (len(targets)==num_class):
+        gmm.means_init = np.array([kmer_table[finalDf.Labels == i].mean(axis=0) for i in targets])
     gmm.fit(kmer_table)
     predictions = gmm.predict(kmer_table)
     return predictions
