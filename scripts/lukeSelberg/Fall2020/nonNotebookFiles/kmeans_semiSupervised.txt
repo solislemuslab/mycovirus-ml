@@ -1,0 +1,14 @@
+kmeans_semiSupervised:
+    The meanshift algorithm is used to identity locations of high density within the kmer space of the data, and then the unsupervised k-means model is run with these locations as the initial centroid coordinates.  The known labels are then compared against the many predicted labels and these clusters are reassigned into groups that minimize the prediction error.
+    
+Parameters:
+    fasta - fasta file to do analysis on
+    klength_min - minimum kmer length, defaulted to 6
+    klength_max - maximum kmer length, defaulted to 6
+    rNum - random number, defaulted to 50
+    y_hat - known labels
+    
+Output: 
+    newLabels - list of labels 
+    kmerXTableInput - kmer table
+

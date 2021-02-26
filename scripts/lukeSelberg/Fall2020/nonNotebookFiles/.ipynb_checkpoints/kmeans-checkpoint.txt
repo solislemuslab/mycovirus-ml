@@ -1,0 +1,13 @@
+kmeans:
+    kmeans is an unsupervised clustering method that clusters the data into k clusters and assigns labels to each each data point. Every point is assigned to the nearest centroid, and these centroids are formed by minimizing the squared Euclidian distances within each cluster.
+
+Parameters:
+    fasta - fasta file to do analysis on
+    klength_min - minimum kmer length, defaulted to 6
+    klength_max - maximum kmer length, defaulted to 6
+    rNum - random number, defaulted to 50
+    cNum - number of clusters
+    
+Output:
+    y_hat - list of labels 
+    kmerXTableInput - kmer table
